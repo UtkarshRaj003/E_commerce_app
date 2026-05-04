@@ -48,5 +48,5 @@ class StorageKeys {
 class AppConstants {
   static const String appName = 'E-Commerce';
   static const int pageSize = 10;
-  static const Duration timeout = Duration(seconds: 30);
+  static const Duration timeout = Duration(seconds: 60);
 }
