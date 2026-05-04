@@ -1,3 +1,4 @@
+Backend/config/firebase-key.json
 node_modules/
 .env
 build/
