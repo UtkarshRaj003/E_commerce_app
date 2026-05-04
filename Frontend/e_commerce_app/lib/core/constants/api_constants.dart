@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://10.0.2.2:5000/api';
+  static const String baseUrl = 'https://e-commerce-app-t0my.onrender.com/api';
 
   // Auth endpoints
   static const String login = '/auth/login';
