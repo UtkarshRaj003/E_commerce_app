@@ -67,15 +67,8 @@ exports.createProduct = async (req, res, next) => {
     const parsedPrice = price != null ? Number(price) : null;
     const parsedVariants = parseVariants(variants);
 
-    if (
-      !title?.trim() ||
-      categoryId == null ||
-      parsedPrice == null ||
-      Number.isNaN(parsedPrice)
-    ) {
-      return res
-        .status(400)
-        .json({ message: 'Title, price and category are required' });
+    if (!title?.trim() || categoryId == null || parsedPrice == null || Number.isNaN(parsedPrice)) {
+      return res.status(400).json({ message: 'Title, price and category are required' });
     }
 
     const category = await Category.findById(categoryId);
@@ -83,12 +76,10 @@ exports.createProduct = async (req, res, next) => {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    if (req.files && req.files.length > 0) {
-      await optimizeImages(req.files);
-    }
-
+    // CLOUDINARY CHANGE: optimizeImages ki zaroorat nahi hai.
+    // req.files mein ab direct Cloudinary URLs honge (file.path)
     const images = req.files
-      ? req.files.map((file) => `/uploads/${file.filename}`)
+      ? req.files.map((file) => file.path)
       : [];
 
     const product = await Product.create({
@@ -96,25 +87,22 @@ exports.createProduct = async (req, res, next) => {
       description: description?.trim(),
       price: parsedPrice,
       categoryId,
-      images,
+      images, // Full HTTPS URLs save honge
       variants: parsedVariants,
     });
 
-    // FCM notification — failure yahan app ko rok na sake
+    // FCM Notification (Same logic)
     try {
       const users = await User.find({ fcmToken: { $ne: null } });
       const tokens = users.map((u) => u.fcmToken).filter(Boolean);
-
       if (tokens.length > 0) {
-        const response = await admin.messaging().sendEachForMulticast({
+        await admin.messaging().sendEachForMulticast({
           tokens,
           notification: { title: 'New Product', body: `${product.title} is now available! 🔥` },
           data: { type: 'promo' },
         });
-        console.log(`FCM: ${response.successCount} success, ${response.failureCount} failed`);
       }
     } catch (fcmError) {
-      // FCM fail ho toh product create toh ho gaya, sirf log karo
       console.error('FCM notification error:', fcmError.message);
     }
 
@@ -127,55 +115,40 @@ exports.createProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, price, categoryId, variants, existingImages } =
-      req.body;
+    const { title, description, price, categoryId, variants, existingImages } = req.body;
 
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // ✅ BUG 2 FIX: pehle wala code mein `else return product.images` tha
-    // jo response kabhi nahi bhejta tha — app hang ho jaata tha.
-    // Ab: existingImages aaye toh use karo, nahi aaye toh purani images rakho.
+    // Existing images handling (Clean fix)
     if (existingImages !== undefined && existingImages !== null) {
-      product.images =
-        typeof existingImages === 'string'
-          ? JSON.parse(existingImages)
-          : existingImages;
+      product.images = typeof existingImages === 'string'
+        ? JSON.parse(existingImages)
+        : existingImages;
     }
-    // agar existingImages nahi aaya — product.images unchanged rehta hai
 
     if (categoryId) {
       const category = await Category.findById(categoryId);
-      if (!category) {
-        return res.status(404).json({ message: 'Category not found' });
-      }
+      if (!category) return res.status(404).json({ message: 'Category not found' });
       product.categoryId = categoryId;
     }
 
+    // CLOUDINARY CHANGE: Nayi images ko cloud URLs mein badalna
     if (req.files && req.files.length > 0) {
-      await optimizeImages(req.files);
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+      const newImages = req.files.map((file) => file.path); // Cloudinary paths
       product.images = [...product.images, ...newImages];
     }
 
+    // Text field updates
     if (title?.trim()) product.title = title.trim();
     if (description != null) product.description = description.trim();
-
     if (price != null) {
       const parsedPrice = Number(price);
-      if (Number.isNaN(parsedPrice)) {
-        return res
-          .status(400)
-          .json({ message: 'Price must be a valid number' });
-      }
-      product.price = parsedPrice;
+      if (!Number.isNaN(parsedPrice)) product.price = parsedPrice;
     }
-
-    if (variants != null) {
-      product.variants = parseVariants(variants);
-    }
+    if (variants != null) product.variants = parseVariants(variants);
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

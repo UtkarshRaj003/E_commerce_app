@@ -17,6 +17,7 @@ class CartScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      extendBody: true,
       backgroundColor: AppColors.scaffoldBg(isDark),
       appBar: _buildAppBar(isDark),
       body: Container(
@@ -330,7 +331,7 @@ class _SummaryBar extends StatelessWidget {
       top: false,
       child: Container(
         padding: EdgeInsets.fromLTRB(
-            24, 20, 24, MediaQuery.of(context).padding.bottom + 40),
+            24, 20, 24, MediaQuery.of(context).padding.bottom + 100),
         decoration: BoxDecoration(
           // Light: frosted white card; Dark: charcoal panel
           color: isDark ? const Color(0xFF111827) : AppColors.lightCard,

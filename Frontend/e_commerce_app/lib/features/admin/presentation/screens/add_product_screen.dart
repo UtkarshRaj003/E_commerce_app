@@ -396,23 +396,23 @@ class _AddProductScreenState extends State<AddProductScreen>
       isDark: isDark,
       child: Column(
         children: [
-          _buildTextField(_titleController, 'Product Title', Icons.title,
-              accentColor, slateDark,
+          _buildTextField(_titleController, 'Product Title', isDark,
+              Icons.title, accentColor, slateDark,
               validator: (v) => v!.isEmpty ? 'Required' : null),
           const SizedBox(height: 16),
-          _buildTextField(_descriptionController, 'Description',
+          _buildTextField(_descriptionController, 'Description', isDark,
               Icons.description, accentColor, slateDark,
               maxLines: 3),
           const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                  child: _buildTextField(_priceController, 'Price (₹)',
+                  child: _buildTextField(_priceController, 'Price (₹)', isDark,
                       Icons.currency_rupee, accentColor, slateDark,
                       isNumber: true)),
               const SizedBox(width: 12),
               Expanded(
-                  child: _buildTextField(_stockController, 'Base Stock',
+                  child: _buildTextField(_stockController, 'Base Stock', isDark,
                       Icons.inventory_2, accentColor, slateDark,
                       isNumber: true)),
             ],
@@ -422,7 +422,7 @@ class _AddProductScreenState extends State<AddProductScreen>
             dropdownColor: cardColor,
             value: _selectedCategory,
             decoration: _inputDecoration(
-                'Category', Icons.category_outlined, accentColor),
+                'Category', Icons.category_outlined, accentColor, isDark),
             items: _categories
                 .map((c) => DropdownMenuItem(value: c, child: Text(c.name)))
                 .toList(),
@@ -445,7 +445,8 @@ class _AddProductScreenState extends State<AddProductScreen>
               ['S', 'M', 'L', 'XL', 'XXL', '128GB', '256GB'],
               accentColor,
               cardColor,
-              slateDark),
+              slateDark,
+              isDark),
           const Divider(height: 32),
           _buildVariantSection(
               'Available Colors',
@@ -453,7 +454,8 @@ class _AddProductScreenState extends State<AddProductScreen>
               ['Black', 'White', 'Red', 'Blue', 'Green', 'Gold'],
               accentColor,
               cardColor,
-              slateDark),
+              slateDark,
+              isDark),
         ],
       ),
     );
@@ -613,7 +615,7 @@ class _AddProductScreenState extends State<AddProductScreen>
   }
 
   Widget _buildTextField(TextEditingController controller, String label,
-      IconData icon, Color accentColor, Color slateDark,
+      bool isDark, IconData icon, Color accentColor, Color slateDark,
       {int maxLines = 1,
       bool isNumber = false,
       String? Function(String?)? validator}) {
@@ -624,17 +626,19 @@ class _AddProductScreenState extends State<AddProductScreen>
       inputFormatters: isNumber
           ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))]
           : null,
-      decoration: _inputDecoration(label, icon, accentColor),
+      decoration: _inputDecoration(label, icon, accentColor, isDark),
       validator: validator,
     );
   }
 
   InputDecoration _inputDecoration(
-      String label, IconData icon, Color accentColor) {
+      String label, IconData icon, Color accentColor, bool isDark) {
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
-          color: Colors.grey[900], fontWeight: FontWeight.w600, fontSize: 14),
+          color: isDark ? Colors.white : Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 14),
       prefixIcon: Icon(icon, color: accentColor, size: 20),
       filled: true,
       fillColor: Colors.grey.withOpacity(0.3),
@@ -651,12 +655,14 @@ class _AddProductScreenState extends State<AddProductScreen>
   }
 
   Widget _buildVariantSection(
-      String label,
-      List<String> items,
-      List<String> quickOptions,
-      Color accentColor,
-      Color cardColor,
-      Color slateDark) {
+    String label,
+    List<String> items,
+    List<String> quickOptions,
+    Color accentColor,
+    Color cardColor,
+    Color slateDark,
+    bool isDark,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -664,11 +670,12 @@ class _AddProductScreenState extends State<AddProductScreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label,
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    color: isDark ? Colors.grey : Colors.black,
+                    fontWeight: FontWeight.w600)),
             IconButton(
-              onPressed: () => _showVariantPicker(label, items, quickOptions,
-                  cardColor, accentColor, slateDark),
+              onPressed: () => _showVariantPicker(label, items, isDark,
+                  quickOptions, cardColor, accentColor, slateDark),
               icon: Icon(Icons.add_circle_outline_rounded, color: accentColor),
             ),
           ],
@@ -711,7 +718,7 @@ class _AddProductScreenState extends State<AddProductScreen>
     );
   }
 
-  void _showVariantPicker(String title, List<String> currentList,
+  void _showVariantPicker(String title, List<String> currentList, bool isDark,
       List<String> quick, Color cardColor, Color slateDark, Color accentColor) {
     final controller = TextEditingController();
     showModalBottomSheet(
@@ -756,20 +763,19 @@ class _AddProductScreenState extends State<AddProductScreen>
             TextField(
               controller: controller,
               autofocus: true,
-              style: const TextStyle(),
-              decoration:
-                  _inputDecoration('Custom $title', Icons.edit, accentColor)
-                      .copyWith(
-                          suffixIcon: IconButton(
-                              icon: const Icon(Icons.check,
-                                  color: Colors.greenAccent),
-                              onPressed: () {
-                                if (controller.text.isNotEmpty) {
-                                  setState(() =>
-                                      currentList.add(controller.text.trim()));
-                                  Navigator.pop(ctx);
-                                }
-                              })),
+              decoration: _inputDecoration(
+                      'Custom $title', Icons.edit, accentColor, isDark)
+                  .copyWith(
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.check,
+                              color: Colors.greenAccent),
+                          onPressed: () {
+                            if (controller.text.isNotEmpty) {
+                              setState(() =>
+                                  currentList.add(controller.text.trim()));
+                              Navigator.pop(ctx);
+                            }
+                          })),
             ),
             const SizedBox(height: 30),
           ],

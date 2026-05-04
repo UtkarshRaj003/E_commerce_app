@@ -11,7 +11,7 @@ import '../../core/utils/helpers.dart';
 String getFullImageUrl(String path) {
   if (path.isEmpty) return '';
   if (path.startsWith("http")) return path;
-  return "http://10.0.2.2:5000$path";
+  return "https://e-commerce-app-t0my.onrender.com$path";
 }
 
 // Brand color palette — dark mode uses deep-space blacks,

@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 
+// const firebaseConfig = require('./firebase-key');
 const firebaseConfig = process.env.FIREBASE_SERVICE_ACCOUNT;
 
 if (!firebaseConfig) {

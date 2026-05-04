@@ -3,8 +3,15 @@ import 'package:intl/intl.dart';
 // Returns full image URL for backend images
 String getBackendImageUrl(String path) {
   if (path.isEmpty) return '';
+
   if (path.startsWith('http')) return path;
-  return 'http://10.0.2.2:5000/uploads/$path';
+
+  if (!path.startsWith('/')) {
+    return 'https://e-commerce-app-t0my.onrender.com/uploads/$path';
+  }
+
+  // Baaki cases ke liye simple append
+  return 'https://e-commerce-app-t0my.onrender.com$path';
 }
 
 class DateFormatter {

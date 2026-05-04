@@ -500,14 +500,14 @@ class ProductSearchDelegate extends SearchDelegate<String> {
       appBarTheme: AppBarTheme(
         color: isDark ? AppColors.deepSpace : Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white70),
+        iconTheme: const IconThemeData(),
       ),
       inputDecorationTheme: const InputDecorationTheme(
-        hintStyle: TextStyle(color: Colors.white38),
+        hintStyle: TextStyle(),
         border: InputBorder.none,
       ),
-      textTheme: const TextTheme(
-        titleLarge: TextStyle(color: Colors.white, fontSize: 16),
+      textTheme: TextTheme(
+        titleLarge: TextStyle(fontSize: 16, color: isDark ? Colors.white : Colors.black,),
       ),
     );
   }

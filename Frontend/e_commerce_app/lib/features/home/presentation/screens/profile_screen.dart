@@ -247,30 +247,33 @@ class ProfileScreen extends StatelessWidget {
         icon: Icons.power_settings_new_rounded,
         onConfirm: () => context.read<AuthBloc>().add(AuthLogoutRequested()),
       ),
-      child: Container(
-        width: double.infinity,
-        height: 52,
-        decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.redAccent.withOpacity(0.35)),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.power_settings_new_rounded,
-                color: Colors.redAccent, size: 18),
-            SizedBox(width: 10),
-            Text(
-              'LOGOUT',
-              style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                letterSpacing: 1.2,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 120),
+        child: Container(
+          width: double.infinity,
+          height: 52,
+          decoration: BoxDecoration(
+            color: Colors.red.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.redAccent.withOpacity(0.35)),
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.power_settings_new_rounded,
+                  color: Colors.redAccent, size: 18),
+              SizedBox(width: 10),
+              Text(
+                'LOGOUT',
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1.2,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

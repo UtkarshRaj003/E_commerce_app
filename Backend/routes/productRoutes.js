@@ -1,6 +1,8 @@
 const express = require('express');
+const { storage } = require('../config/cloudinary');
+const multer = require('multer');
+const upload = multer({ storage: storage });
 const { protect, admin } = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
 const {
   createProduct,
   updateProduct,
