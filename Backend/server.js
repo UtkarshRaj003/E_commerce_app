@@ -12,10 +12,10 @@ const app = require('./app');
 
 connectDB();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 const environment = process.env.NODE_ENV || 'development';
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server running in ${environment} mode on port ${PORT}`);
 });
 
