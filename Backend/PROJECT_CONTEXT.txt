@@ -1,0 +1,75 @@
+Backend:
+- Node + Express + MongoDB
+- JWT Auth
+- Razorpay
+- REST API design
+
+Important Fixes:
+- Removed mongoose deprecated options
+- Fixed duplicate index
+- Fixed cart variant bug
+- Fixed product remove → deleteOne
+- Fixed JWT_SECRET validation
+- Fixed upload size limit
+- Fixed routes to REST style
+
+Goal:
+- Flutter frontend with BLoC + Dio
+- Full ecommerce app (Amazon-like)
+
+
+
+
+
+
+
+
+
+
+
+
+🚀 4. Kal kya karenge (Clear Roadmap)
+
+👉 Step-by-step:
+
+🔹 Phase 1
+Flutter project structure
+Folder architecture
+🔹 Phase 2
+API integration (Dio)
+🔹 Phase 3
+BLoC setup
+🔹 Phase 4
+Screens:
+Auth
+Home
+Product
+Cart
+Wishlist
+Order
+🔹 Phase 5
+Razorpay integration
+🔹 Phase 6
+Final testing + fixes
+
+
+
+
+
+
+
+
+
+🎯 5. Final Stage (Sabse Important)
+
+👉 Jab project complete ho jayega:
+
+✔ Main tumhe:
+
+Pura backend explain karunga
+Flutter architecture samjhaunga
+Interview questions dunga
+Real-world logic sikhaunga
+
+👉 Matlab:
+sirf project nahi — skill bhi develop hogi
